@@ -11,7 +11,7 @@ import SwiftUI
 struct com_khine_wesplitApp: App {
     var body: some Scene {
         WindowGroup {
-            Day20()
+            Day23()
         }
     }
 }

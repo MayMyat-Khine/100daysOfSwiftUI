@@ -12,6 +12,10 @@ struct Day21:View{
   @State  var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
     @State private var scoreTitle = ""
+    @State private var score = 0
+    @State private var yourPickIndex = 0
+    @State private var count = 0
+    @State private var reset = false
     var body:some View{
         ZStack {
             /*LinearGradient(colors: [.blue,.black], startPoint: .top, endPoint: .bottom)*/
@@ -34,7 +38,13 @@ struct Day21:View{
                     
                     ForEach(0..<3) { number in
                         Button {
-                            flagTapped(number)
+                            if(count < 8 ) {
+                                count = count + 1
+                                flagTapped(number)
+                            }else{
+                             reset = true
+                            }
+                           
                         } label: {
                             Image(countries[number]).clipShape(.capsule).shadow(color: .red,radius: 5,)
                         }
@@ -42,7 +52,7 @@ struct Day21:View{
                 }
                 Spacer()
                 Spacer()
-                Text("Score: ???")
+                Text("Score: \(score)")
                     .foregroundStyle(.white)
                     .font(.title.bold())
                 Spacer()
@@ -51,14 +61,22 @@ struct Day21:View{
         }.alert(scoreTitle , isPresented:  $showingScore){
             Button("Continue",action: askQuestion)
         }message: {
-            Text("Your score is ???")
+           
+            Text("Your score is \(score) " + (scoreTitle == "Wrong" ? "Wrong!! This is flag of \(countries[yourPickIndex])": ""))
+               
+           
+        }.alert("You played 8 matcher. Want to reset?", isPresented: $reset){
+            Button("Reset",action :resetAll)
+            Button("Cancel", role: .destructive){}
         }
         
     }
     
     func flagTapped(_ number:Int){
+        yourPickIndex = number
         if number == correctAnswer {
             scoreTitle = "Correct"
+            score = score + 1
         }else {
             scoreTitle = "Wrong"
         }
@@ -69,6 +87,12 @@ struct Day21:View{
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func resetAll (){
+       askQuestion()
+        score = 0
+        count = 0
     }
 }
 
