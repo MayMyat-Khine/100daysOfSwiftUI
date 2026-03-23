@@ -15,7 +15,7 @@ struct ContentView: View {
     @State private var checkAmount = 0.0
     @State private var numberOfPeople = 2
     @State private var tip = 10
-    let tips = [10,20,30,40,50,60,70,80,90,100]
+    let tips = [0,10,20,30,40,50,60,70,80,90,100]
     
     @FocusState private var amountIsFocused : Bool
     var totalPerPerson : Double {
@@ -53,7 +53,7 @@ struct ContentView: View {
                     }.pickerStyle(.navigationLink)
                 }
                 Section("Total Amount"){
-                    Text("\(checkAmount + (checkAmount / 100 * Double(tip)) )")
+                    Text("\(checkAmount + (checkAmount / 100 * Double(tip)) )").foregroundStyle(tip  == 0 ? .red : .white)
                 }
                 
                 Section("Amount Per Person"){
