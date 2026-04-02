@@ -36,6 +36,10 @@ struct Day30 : View {
             .alert(errorTitle, isPresented: $showError){}
             message:{
                 Text(errorMsg)
+            }.toolbar{
+                Button("Restart"){
+                    startGame()
+                }
             }
         }
     }
@@ -55,6 +59,11 @@ struct Day30 : View {
         }
         guard isReal(word: word) else {
             error(title: "Word not recognized", msg: "You can't just make them up, you know!")
+            return
+        }
+        
+        guard isAllow(word: word) else {
+            error(title: "Short Length", msg: "Word must be greater than 3 words")
             return
         }
         
@@ -108,6 +117,10 @@ struct Day30 : View {
         errorMsg = msg
         errorTitle = title
         showError = true
+    }
+    
+    func isAllow (word : String) -> Bool {
+        return    word.count >= 3 && word.prefix(2) != rootWord.prefix(2)
     }
 }
 
