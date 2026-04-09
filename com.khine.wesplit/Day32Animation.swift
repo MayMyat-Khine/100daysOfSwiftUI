@@ -15,7 +15,7 @@ struct Day32Animation : View {
         print(animationAmount)
        return VStack {
             Button("Tap Me") {
-                //            animateAmount += 1
+                            animateAmount += 1
             }
             .padding(50)
             .background(.red)
@@ -60,7 +60,8 @@ struct Day32Animation : View {
 }
 
 #Preview {
-    AnimationExplicit()
+//    AnimationExplicit()
+    Day32Animation()
 }
 
 struct AnimationExplicit: View {
@@ -68,14 +69,15 @@ struct AnimationExplicit: View {
     var body: some View {
         Button("Tap Me") {
            
-            withAnimation(.spring(duration: 10 ,bounce: 0.5)){
+//            withAnimation(.spring(duration: 10 ,bounce: 0.5)){
                 animateAmount += 180
-            }
+//            }
         }
         .padding(50)
         .background(.red)
         .foregroundStyle(.white)
         .clipShape(.circle)
         .rotation3DEffect(.degrees(animateAmount), axis: (x: -1, y: -1, z: 0))
+        .animation(.spring(duration: 10,bounce: 0.5), value: animateAmount)
     }
 }

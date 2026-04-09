@@ -1,5 +1,5 @@
 //
-//  Day21.swift
+//  Day21GuessTheFlag.swift
 //  com.khine.wesplit
 //
 //  Created by MayMK on 3/17/26.
@@ -13,7 +13,7 @@ struct FlagImage : View {
         Image(img).clipShape(.capsule).shadow(color: .red,radius: 5,)
     }
 }
-struct Day21:View{
+struct Day21GuessTheFlag:View{
   @State  var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
   @State  var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
@@ -22,6 +22,8 @@ struct Day21:View{
     @State private var yourPickIndex = 0
     @State private var count = 0
     @State private var reset = false
+    @State private var animateAmount = 0.0
+    @State private var normalSize = true
     var body:some View{
         ZStack {
             /*LinearGradient(colors: [.blue,.black], startPoint: .top, endPoint: .bottom)*/
@@ -41,19 +43,33 @@ struct Day21:View{
                         .padding(.vertical, 20)
                         .background(.regularMaterial)
                         .clipShape(.rect(cornerRadius: 20))
+                        
                     
                     ForEach(0..<3) { number in
                         Button {
+                     animateAmount = 360
+                            
+                            silentReset()
                             if(count < 8 ) {
                                 count = count + 1
-                                flagTapped(number)
+                            
+                            flagTapped(number)
+
+                       
                             }else{
                              reset = true
                             }
                            
+                            normalSize = false
+                           
                         } label: {
                             FlagImage(img: countries[number])
-                        }
+                        }.rotation3DEffect(.degrees(yourPickIndex == number ? animateAmount : 0.0), axis: (x:0 , y: 1, z: 1))
+                            .animation(yourPickIndex == number ? .spring : nil, value : animateAmount)
+                            .opacity(normalSize ? 1 : yourPickIndex == number ? 1 : 0.25)
+                            .scaleEffect(normalSize  ? 1 : yourPickIndex == number ? 1.5 : 0.5)
+                            .animation(.spring(duration: 2, bounce : 0.5), value: animateAmount)
+                            
                     }
                 }
                 Spacer()
@@ -87,12 +103,25 @@ struct Day21:View{
             scoreTitle = "Wrong"
         }
         
-        showingScore = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            showingScore = true
+        }
+           
+       
     }
     
     func askQuestion() {
-        countries.shuffle()
+        
+            countries.shuffle()
+      
         correctAnswer = Int.random(in: 0...2)
+        reanimate()
+    }
+    
+    func reanimate(){
+        withAnimation{
+            normalSize = true
+        }
     }
     
     func resetAll (){
@@ -100,8 +129,25 @@ struct Day21:View{
         score = 0
         count = 0
     }
+    func silentReset() {
+      //  Wait for the animation to finish (e.g., 0.5 seconds)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//             Reset to 0 SILENTLY (No Animation)
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                animateAmount = 0
+            }
+        }
+    }
 }
 
 #Preview(){
-    Day21()
+    Day21GuessTheFlag()
+}
+
+struct EachFlag : View {
+    var body: some View {
+        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+    }
 }
